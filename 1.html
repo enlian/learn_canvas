@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent selector</title>
+</head>
+<body>
+<canvas height="500" width="500" id="canvas"></canvas>
+<script>
+  var context = document.getElementById("canvas").getContext('2d');
+  var fromx, fromy, tox, toy;
+  function canvas_arrow_alternate2(context, fromx, fromy, tox, toy, strokeStyle) {
+    var headlen = 12;   // length of head in pixels
+    var angle = Math.atan2(toy - fromy, tox - fromx);
+    context.save();
+    context.strokeStyle = strokeStyle || '#000'; // defaults to black
+    // dashed part
+    context.beginPath();
+    //    context.setLineDash([10]);
+    //    context.moveTo(fromx, fromy);
+    //    context.lineTo(tox, toy);
+    //    context.stroke();
+    // second part -non dashed-
+    context.beginPath();
+    context.setLineDash([0]);
+    context.moveTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+    context.moveTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+    context.stroke();
+    //
+    context.restore();          // this will, in fact, restore strokeStyle
+  }
+
+  var press = false
+
+  document.getElementById("canvas").addEventListener('mousedown', function (e) {
+    fromx = e.pageX;
+    fromy = e.pageY;
+    press = true
+  })
+
+  document.getElementById("canvas").addEventListener('mousemove', function (e) {
+    if (press == true) {
+      tox = e.pageX;
+      toy = e.pageY;
+      context.clearRect(0, 0, 500, 500)
+      context.beginPath();
+      context.lineJoin = "line";
+      context.moveTo(fromx, fromy);
+      context.lineTo(tox, toy);
+      context.closePath();
+      context.stroke();
+    }
+
+  })
+
+  document.getElementById("canvas").addEventListener('mouseup', function (e) {
+    press = false
+    tox = e.pageX;
+    toy = e.pageY
+//    context.lineJoin = "line";
+//    context.moveTo(fromx, fromy);
+//    context.lineTo(tox, toy);
+//    context.closePath();
+    canvas_arrow_alternate2(context, fromx, fromy, tox, toy, "#000")
+  })
+
+</script>
+</body>
+</html>
